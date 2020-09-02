@@ -5,7 +5,15 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.StringTokenizer;
 
-// 
+/*
+ * 이를 코드로 구현하기 위해 아래와 같이 함수와 변수를 정의합니다.
+1. int dfs(int A, bool isRoot) : A의 자식 노드가 A를 거치지 않고 도달할 수 있는 정점 중 가장 먼저 dfs함수가 방문한 정점을 반환한다.
+isRoot는 정점 A가 루트노드인지를 나타냅니다.
+2. 정점 i가 DFS탐색에서 발견된 순서 : discovered[i]
+3. 정점 i가 절단점인지 여부 : isCutVertex[i]
+백준 온라인 저지 11266번 단절점 문제에 대한 코드를 작성해 보겠습니다.
+출처: https://bowbowbow.tistory.com/3 [멍멍멍]
+ * */
 public class 단절점 {
 	static int T, V, E; //V(1≤V≤10,000), E(1≤E≤100,000)
 	static int[] visited;
