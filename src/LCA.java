@@ -1,120 +1,120 @@
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
+import java.io.FileInputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
+import java.util.ArrayDeque;
 import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.Queue;
+import java.util.Deque;
 import java.util.StringTokenizer;
+
+// 11437번
 
 public class LCA {
 
-	static int T = 0;
-	static int N, R, Q;
-	static ArrayList<Integer> t[];
-	static int[][] par;
-	static int[] dep;
+	static int N, M;
+	static int[][] par; // 2의 n제곱 단계 조상의 위치를 기록한다. par[A][3] A에 대한 2의 3제곱 위치의 조상
+	static int[] dep; // A에 대한 깊이
+	static ArrayList<Integer>[] tree;
 
 	static StringTokenizer st;
 
 	public static void main(String[] args) throws Exception {
 
-// System.setIn(new FileInputStream("./tc/LCA.txt"));
+		System.setIn(new FileInputStream("./src/11437.txt"));
 		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 		BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(System.out));
 
-// T = Integer.parseInt(br.readLine().trim());
-
-		st = new StringTokenizer(br.readLine().trim());
-// for (int tc = 1; tc <= T; tc++) {
-
-		N = Integer.parseInt(st.nextToken());
-		R = Integer.parseInt(st.nextToken());
-		Q = Integer.parseInt(st.nextToken());
-
-		par = new int[N + 1][19];
-		st = new StringTokenizer(br.readLine().trim());
-		t = new ArrayList[N + 1];
-		dep = new int[N + 1];
-		for (int e = 1; e <= N; e++) {
-			t[e] = new ArrayList<Integer>();
+		N = Integer.parseInt(br.readLine().trim());
+		
+		tree = new ArrayList[N+1];
+		dep = new int[N+1];
+		par = new int[N+1][19];
+		
+		for (int n = 1; n <= N; n++) {
+			tree[n] = new ArrayList<Integer>();
 		}
-
-		for (int e = 1; e <= N; e++) {
-			par[e][0] = Integer.parseInt(st.nextToken());
-			if (e != R) {
-				t[par[e][0]].add(e);
-			}
-		}
-
-		Queue<Integer> que = new LinkedList<Integer>();
-		que.add(R);
-		dep[R] = 0;
-		while (!que.isEmpty()) {
-			int p = que.poll();
-			for (int c : t[p]) {
-				dep[c] = dep[p] + 1;
-				que.add(c);
-			}
-		}
-		for (int lvl = 1; lvl <= 18; lvl++) {
-			for (int e = 1; e <= N; e++) {
-				par[e][lvl] = par[par[e][lvl - 1]][lvl - 1];
-			}
-		}
-
-		for (int i = 1; i <= Q; i++) {
-
+		
+		int a, b;
+		for (int n = 1; n < N; n++) {
 			st = new StringTokenizer(br.readLine().trim());
-			int a = Integer.parseInt(st.nextToken());
-			int b = Integer.parseInt(st.nextToken());
-			if (dep[a] > dep[b]) {
-//bw.write("NO\n");
-				System.out.println("NO");
-			} else {
-				if (lca(b, a) == a)
-//bw.write("YES\n");
-					System.out.println("YES");
-				else
-//bw.write("NO\n");
-					System.out.println("NO");
+			a = Integer.parseInt(st.nextToken());
+			b = Integer.parseInt(st.nextToken());
+			par[Math.max(a, b)][0]=Math.min(a, b);
+			tree[a].add(b);
+			tree[b].add(a);
+		}
+		
+		Deque<Integer> dq = new ArrayDeque<Integer>();
+		//par[1][0]=1;
+		dq.add(1);
+		dep[1]=1;
+
+		// bfs 로 깊이 기록
+		while(!dq.isEmpty()) {
+			int now = dq.pollFirst();
+			for(int next:tree[now]) {
+				if(dep[next]==0) {
+					dep[next] = dep[now]+1;
+					dq.addLast(next);
+				}
 			}
-//bw.newLine();
+		}
+		
+		for (int n = 1; n <= N; n++) {
+			//System.out.println(n+" "+dep[n]);
+			for (int l = 1; l < 19; l++) {
+				par[n][l]=par[par[n][l-1]][l-1];
+			}
 		}
 
-		bw.flush();
-
-		bw.close();
-
+		M = Integer.parseInt(br.readLine().trim());
+		for (int m = 1; m <= M; m++) {
+			System.out.println(" TC==================>"+M);
+			st = new StringTokenizer(br.readLine().trim());
+			a = Integer.parseInt(st.nextToken());
+			b = Integer.parseInt(st.nextToken());
+			System.out.println(lca(a,b));
+		}
 	}
 
 	private static int lca(int a, int b) {
-
-		// a를 더 깊은 넘으로 만든다. a를 올릴꺼야
-		if (dep[a] < dep[b]) {
-			// System.out.println("swap");
-			a ^= b;
-			b ^= a;
-			a ^= b;
+		
+		// 깊이가 더 깊은 것을 a로 만든다
+		if(dep[a]<dep[b]) {
+			a^=b;b^=a;a^=b;
 		}
-		for (int i = 0; i < 18; i++) {
-			// 2의 i 제곱과 &연산으로 원하는 만큼 올린다.
-			// 4 는 100 로 i=3일때
-			if (((a << i) & (dep[a] - dep[b])) != 0) {
-				a = par[a][i];
+		
+		int two=1;
+		//System.out.println(a+ " "+b);
+		//System.out.println(dep[a]+ " "+dep[b]);
+		// 두개의 깊이 차이 만큼 a를 올린다.
+		for (int l = 0; l < 19; l++) {
+			// 두 깊이 차이에 해당하는 깊이만큼 올린다.
+			if( ( (dep[a]-dep[b])&(two<<l) ) !=0) {
+				
+				System.out.println(" ======>"+l);
+				a=par[a][l];
 			}
-			//같은 높이까지 올라왔음.
-			if (a == b)
-				return a;
-			//둘의 2의 17 제곱번째 조상부터 같은지 비교하면서
 		}
-		for (int i = 18; i > 0; i--) {
-			if (par[a][i] != par[b][i]) {
+
+		//System.out.println(a+ " "+b);
+		//System.out.println(dep[a]+ " "+dep[b]);
+		
+		
+		if(a==b) return a; 
+
+		for(int i=18; i>0;i--) {
+			//System.out.println(par[a][i]+ " "+par[b][i]+"  "+i);
+			
+			// 두개가 다르다는 건 공통조상이 아니다.. 
+			if(par[a][i]!=par[b][i]) {
 				a = par[a][i];
 				b = par[b][i];
 			}
 		}
+		
 		return par[a][0];
+		
 	}
-
 }
