@@ -1,0 +1,31 @@
+
+
+최단거리 
+
+BackTracking 모든 경우의 수 재귀함수
+Greedy Algorithm Sorting 한뒤에 처리
+BFS
+DFS 
+Divide & Conquer (Mergesort와 비슷 문제를 잘게 나눠 
+
+Dijkstra 간선이 양수
+Bellma-Ford 간선이 음수도 가능
+Floyd-Warshall 
+  -  For 경유지 , 시작, 끝 
+
+
+MST  - Kruskal_algorithm
+
+1일차
+교육P-0063 Pac Man
+          DFS로 최단경로를 찾고, 
+		  경로의 길이 및 짝수여부 <- 같은 위치에서 기다리기 없음
+교육P-0042 배제쌍
+교육P-0034 팀짜기
+교육P-0067 가장 큰 최단 경로  - 숙제
+
+2일차
+교육P-0035 이진 탐색 2
+기출P-0023 운동하자
+기출P-0054 자동차여행
+기출P-0017 직사각형 개수세기 - 숙제
