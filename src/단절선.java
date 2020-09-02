@@ -5,7 +5,11 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.StringTokenizer;
 
-// 
+/*
+ * int dfs(int A, int parent) : A와 A의 자식 노드가 A에서 parent노드로 가는 간선을 사용하지 않고 도달할 수 있는 정점 중 가장 먼저 dfs함수가 방문한 정점을 반환한다.
+백준 온라인 저지 11400번 단절선 문제에 대한 코드를 작성해 보겠습니다.
+출처: https://bowbowbow.tistory.com/3 [멍멍멍]
+ * */
 public class 단절선 {
 	static int T, V, E; //V(1≤V≤10,000), E(1≤E≤100,000)
 	static int[] visited;
